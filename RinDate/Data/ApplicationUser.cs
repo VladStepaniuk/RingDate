@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using NetTopologySuite.Geometries;
 using RD.Models;
 using RD.Models.Sections;
 using RD.Models.Sections.ExpectSect;
@@ -29,6 +30,7 @@ namespace RinDate.Data
         public bool ShowAge { get; set; }
         public int Hight { get; set; }
         public int Weight { get; set; }
+        public Point Location { get; set; }
         public HashSet<ApplicationUser> FavouriteUsers { get; set; }
         
     }

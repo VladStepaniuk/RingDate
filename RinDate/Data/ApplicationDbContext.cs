@@ -28,7 +28,7 @@ namespace RinDate.Data
         public DbSet<Ethicity> Ethicities { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
         public DbSet<Body> Bodies { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Role> RolesIn { get; set; }
 
     }
 }
