@@ -8,7 +8,7 @@ namespace RinDate.Controllers
 {
     public class LocationController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Desk()
         {
             return View();
         }

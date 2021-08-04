@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "Desk";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Desk</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <input id="myLocation" value="myLoc" />
+        </div>
+        <div class="col-md-6">
+            <input id="fakeLocation" value="fakeLoc" />
+        </div>
+    </div>
+    <div class="profiles">
+
+    </div>
+</div>
+
+<script>
+    document.getElementById("myLocation").onclick = function () {
+        navigator.geolocation.getCurrentPosition(console.log, console.log);
+    }
+</script>
