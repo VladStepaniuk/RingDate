@@ -9,19 +9,36 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <input id="myLocation" value="myLoc" />
+            <input id="myLocation" type="button" value="myLoc" />
         </div>
         <div class="col-md-6">
-            <input id="fakeLocation" value="fakeLoc" />
+            <input id="fakeLocation" type="button" value="fakeLoc" />
         </div>
     </div>
-    <div class="profiles">
+    <div id="profiles">
 
     </div>
 </div>
 
 <script>
     document.getElementById("myLocation").onclick = function () {
-        navigator.geolocation.getCurrentPosition(console.log, console.log);
+        navigator.geolocation.getCurrentPosition(successfulLookup, console.log);
+    }
+
+    const successfulLookup = (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("The latitude of your position is: " + latitude);
+        console.log("The longitude of your position is: " + longitude);
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetNearUsers")",
+            data: { latitude: latitude, longitude: longitude },
+            success: function (response) {
+                console.log(response);
+                const profile = document.querySelector('#profiles');
+                profile.appendChild(response);
+            }
+        });
     }
 </script>

@@ -39,6 +39,7 @@ namespace RinDate
             services.AddRazorPages();
 
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

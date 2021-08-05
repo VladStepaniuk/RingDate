@@ -1,0 +1,11 @@
+﻿@model IList<RinDate.Data.ApplicationUser>
+
+
+<div class="ankets">
+    @foreach(var item in Model)
+    {
+        <div class="image">
+            <p>@item.Email</p>
+        </div>
+    }
+</div>
