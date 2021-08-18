@@ -3,51 +3,66 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using RD.Models;
+using RinDate.Data;
+using RinDate.Service;
 
 namespace RinDate.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IToolService _toolService;
 
         public IndexModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IToolService toolService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _toolService = toolService;
         }
 
         public string Username { get; set; }
 
+        [Display (Name ="Choose the gallery images.")]
+        public IFormFileCollection GalleryFiles { get; set; }
+
+        public List<GalleryModel> Gallery { get; set; }
+
         [TempData]
         public string StatusMessage { get; set; }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
 
-        public class InputModel
-        {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
-        }
+        [Display(Name = "Choose the cover photo of you.")]
+        public IFormFile CoverPhoto { get; set; }
+        public string CoverImageUrl { get; set; }
 
-        private async Task LoadAsync(IdentityUser user)
+        private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
-
-            Input = new InputModel
+            if(user.UserGallery != null)
             {
-                PhoneNumber = phoneNumber
-            };
+                foreach(var item in user.UserGallery)
+                {
+                    Gallery.Add(new GalleryModel
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        URL = item.URL
+                    });
+                }
+            }
+
+            Username = userName;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -65,26 +80,53 @@ namespace RinDate.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
+            string folder = "";
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            if(CoverPhoto != null)
+            {
+                folder = "users/cover/";
+                user.CoverImageUrl = await _toolService.UploadImage(folder, CoverPhoto);
+            }
+
+            if(GalleryFiles != null)
+            {
+                folder = "users/gallery/";
+
+                Gallery = new List<GalleryModel>();
+
+                foreach (var file in GalleryFiles)
+                {
+                    var gallery = new GalleryModel()
+                    {
+                        Name = file.FileName,
+                        URL = await _toolService.UploadImage(folder, file)
+                    };
+
+                    Gallery.Add(gallery);
+                }
+
+                user.UserGallery = new List<UserGallery>();
+
+                foreach(var file in Gallery)
+                {
+                    user.UserGallery.Add(new UserGallery()
+                    {
+                        Name = file.Name,
+                        URL = file.URL,
+
+                    });
+                }
+            }
+
+            await _userManager.UpdateAsync(user);
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);
                 return Page();
-            }
-
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
             }
 
             await _signInManager.RefreshSignInAsync(user);

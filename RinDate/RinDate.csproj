@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="wwwroot\users\gallery\" />
+    <Folder Include="wwwroot\users\cover\" />
   </ItemGroup>
 
 </Project>

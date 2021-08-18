@@ -29,6 +29,7 @@ namespace RinDate.Data
         public DbSet<Relationship> Relationships { get; set; }
         public DbSet<Body> Bodies { get; set; }
         public DbSet<Role> RolesIn { get; set; }
+        public DbSet<UserGallery> UserGalleries { get; set; }
 
     }
 }

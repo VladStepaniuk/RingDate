@@ -15,8 +15,8 @@
             <input id="fakeLocation" type="button" value="fakeLoc" />
         </div>
     </div>
-    <div id="profiles">
-
+    <div id="users" name="users" class="users">
+       
     </div>
 </div>
 
@@ -36,8 +36,8 @@
             data: { latitude: latitude, longitude: longitude },
             success: function (response) {
                 console.log(response);
-                const profile = document.querySelector('#profiles');
-                profile.appendChild(response);
+
+                $('.users').append(response);
             }
         });
     }

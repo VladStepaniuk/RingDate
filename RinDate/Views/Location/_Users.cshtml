@@ -1,11 +1,18 @@
 ﻿@model IList<RinDate.Data.ApplicationUser>
 
 
+@if (Model.Any())
+{
 <div class="ankets">
-    @foreach(var item in Model)
-    {
+    @foreach (var item in Model)
+    {  
         <div class="image">
-            <p>@item.Email</p>
+            <h2 class="text-light">@item.Email</h2>
         </div>
     }
 </div>
+}
+else
+{
+    <h1>Looks like here is no users!</h1>
+}

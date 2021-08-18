@@ -1,28 +1,88 @@
 ﻿@page
+@using RD.Models
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
+
 }
 
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled />
+        <div class="row">
+            <div class="text-center">
+               @if (user.CoverImageUrl != null)
+               {
+                   <img src ="@user.CoverImageUrl" alt="image" class="img-thumbnail"/>
+               }
+               else
+               {
+                   <img src="~/images/default-image.png" class="img-thumbnail"/>
+               }
             </div>
-            <div class="form-group">
-                <label asp-for="Input.PhoneNumber"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+        </div>
+        @*@if(Gallery != null) { 
+            <div class="row">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        @for (int i = 0; i < Gallery.Count(); i++)
+                        {
+                            <li data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i==0 ? "active" : "") "></li>
+                        }
+                    </ol>
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Gallery.Count(); i++)
+                        {
+                            <div class="@(i==0 ? "carousel-item active" : "carousel-item") ">
+                                <img class="d-block w-100" src="@Gallery[i].URL" alt="@Gallery[i].Name">
+                            </div>
+                        }
+
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
             </div>
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
-        </form>
-    </div>
+            }*@
+            <form id="profile-form" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" class="form-control" disabled />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GalleryFiles" class="control-label" />
+                    <div class="custom-file">
+                        <input asp-for="GalleryFiles" class="custom-file-input" id="customFile" />
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                    <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GalleryFiles" class="control-label" />
+                    <div class="custom-file">
+                        <input asp-for="GalleryFiles" class="custom-file-input" id="customFile" />
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                    <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                </div>
+
+
+                <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    
 </div>
 
 @section Scripts {

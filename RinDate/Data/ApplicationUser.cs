@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using NetTopologySuite.Geometries;
 using RD.Models;
 using RD.Models.Sections;
@@ -25,13 +26,14 @@ namespace RinDate.Data
         public IEnumerable<ExpItems> Expectations { get; set; }
         public IEnumerable<MeetItems> Meets { get; set; }
         public bool TakePictures { get; set; }
-      
+        public string CoverImageUrl { get; set; }
         public int Age { get; set; }
         public bool ShowAge { get; set; }
         public int Hight { get; set; }
         public int Weight { get; set; }
         public Point Location { get; set; }
         public HashSet<ApplicationUser> FavouriteUsers { get; set; }
+        public ICollection<UserGallery> UserGallery { get; set; }
         
     }
 }
