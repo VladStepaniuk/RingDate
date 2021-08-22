@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RD.Models;
 using RinDate.Data;
+using RinDate.Models;
 using RinDate.Service;
 
 namespace RinDate.Areas.Identity.Pages.Account.Manage
@@ -28,6 +29,8 @@ namespace RinDate.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
             _toolService = toolService;
         }
+
+        public UserDto UserModel { get; set; }
 
         public string Username { get; set; }
 
@@ -49,19 +52,20 @@ namespace RinDate.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            if(user.UserGallery != null)
-            {
-                foreach(var item in user.UserGallery)
-                {
-                    Gallery.Add(new GalleryModel
-                    {
-                        Id = item.Id,
-                        Name = item.Name,
-                        URL = item.URL
-                    });
-                }
+            if (user.CoverImageUrl != null) {
+                UserModel.ImageCoverUrl = user.CoverImageUrl;
             }
 
+            if(user.UserGallery != null)
+            {
+                UserModel.Gallery = user.UserGallery.Select(img => new GalleryModel
+                {
+                    Id = img.Id,
+                    Name = img.Name,
+                    URL = img.URL
+                }).ToList();
+            }
+            
             Username = userName;
         }
 
@@ -73,6 +77,7 @@ namespace RinDate.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            
             await LoadAsync(user);
             return Page();
         }

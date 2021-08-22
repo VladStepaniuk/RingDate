@@ -11,5 +11,6 @@ namespace RinDate.Service
     public interface IUserService
     {
         Task UpdateCurrentUserLocation(Point location, ApplicationUser user);
+   
     }
 }
