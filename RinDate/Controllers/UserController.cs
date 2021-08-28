@@ -23,9 +23,23 @@ namespace RinDate.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string id)
         {
-            return View();
+            var user = await _userManager.FindByIdAsync(id);
+
+            var model = new UserDto()
+            {
+                UserId = user.Id,
+                ImageCoverUrl = user.CoverImageUrl,
+                Gallery = user.UserGallery.Select(img => new GalleryModel
+                {
+                    Id = img.Id,
+                    Name = img.Name,
+                    URL = img.URL
+                }).ToList(),
+                UserName = user.UserName
+            };
+            return View(model);
         }
 
         [HttpGet]

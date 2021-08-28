@@ -18,5 +18,8 @@ namespace RinDate.Models
         public IFormFileCollection GalleryFiles { get; set; }
 
         public List<GalleryModel> Gallery { get; set; }
+
+        public string UserName { get; set; }
+        public string UserId { get; set; }
     }
 }

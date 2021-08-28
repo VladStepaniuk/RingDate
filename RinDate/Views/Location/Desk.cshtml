@@ -23,7 +23,7 @@
 <!-- Modal -->
 <div class="modal fade" id="location-modal" tabindex="-1" role="dialog" aria-labelledby="location-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content" style="height:500px;">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title" id="address-label">Choose location</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -36,7 +36,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Done</button>
+                <button type="button" onclick="doneClick(pos)" class="btn btn-info" data-dismiss="modal">Done</button>
             </div>
         </div>
     </div>
@@ -44,6 +44,7 @@
 
 
 <script>
+    var map, marker, pos;
     document.getElementById("myLocation").onclick = function () {
         navigator.geolocation.getCurrentPosition(successfulLookup, console.log);
     }
@@ -65,7 +66,7 @@
         });
     }
 
-    var map, marker;
+
 
     function initModal() {
         $("#location-modal").modal();
@@ -98,11 +99,11 @@
         });
 
         currentLat = $("#latitude").val();
-        currentLong = $("#longitude").val();
+        currentLong = $("#longitude").val(); 
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                pos = {
+                this.pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
@@ -116,6 +117,8 @@
                 geocodePosition(marker.getPosition());
             });
         }
+
+
     }
 
     function geocodePosition(pos) {
@@ -132,5 +135,21 @@
                 }
             }
         )
+    }
+
+    function doneClick(pos) {
+        console.log("The latitude of your position is: " + pos.lat);
+        console.log("The longitude of your position is: " + pos.lng);
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetNearUsers")",
+            data: { latitude: pos.lat, longitude: pos.lng },
+            success: function (response) {
+                console.log(response);
+                $('.users').append(response);
+                $('#location-modal').modal('hide');
+            }   
+        });
     }
 </script>

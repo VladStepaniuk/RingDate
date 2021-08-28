@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using NetTopologySuite.Geometries;
+using RD.Models;
 using RinDate.Data;
+using RinDate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +19,46 @@ namespace RinDate.Service
             _userManager = userManager;
         }
 
-        public IList<ApplicationUser> GetNearestUsers(Point myLocation)
+        public IEnumerable<UserDto> GetNearestUsers(Point myLocation)
         {
-            IList<ApplicationUser> users = _userManager.Users
+            IList<UserDto> usersFromDb = _userManager.Users
                 .OrderBy(x => x.Location.Distance(myLocation))
                 .Take(30)
+                .Select(user => new UserDto
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    Gallery = user.UserGallery.Select(img => new GalleryModel
+                    {
+                        Id = img.Id,
+                        Name = img.Name,
+                        URL = img.URL
+                    }).ToList()
+                })
                 .ToList();
 
-            return users;
+            //if (usersFromDb != null || usersFromDb.Count() > 0)
+            //{
+            //    IEnumerable<UserDto> users = usersFromDb.Select(user => new UserDto
+            //    {
+            //        UserId = user.Id,
+            //        UserName = user.UserName,
+            //        Gallery = user.UserGallery.Select(img => new GalleryModel
+            //        {
+            //            Id = img.Id,
+            //            Name = img.Name,
+            //            URL = img.URL
+            //        }).ToList()
+
+            //    }).ToList();
+
+            //    
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+            return usersFromDb;
         }
     }
 }

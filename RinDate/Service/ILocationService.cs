@@ -1,5 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 using RinDate.Data;
+using RinDate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace RinDate.Service
 {
     public interface ILocationService
     {
-        IList<ApplicationUser> GetNearestUsers(Point myLocation);
+        IEnumerable<UserDto> GetNearestUsers(Point myLocation);
     }
 }

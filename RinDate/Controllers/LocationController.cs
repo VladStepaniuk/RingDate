@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
+using RD.Models;
 using RinDate.Data;
+using RinDate.Models;
 using RinDate.Service;
 using System;
 using System.Collections.Generic;
@@ -36,11 +38,19 @@ namespace RinDate.Controllers
                 SRID = 4326
             };
 
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             await _userService.UpdateCurrentUserLocation(location, user);
-            IList<ApplicationUser> nearbyUsers = _locationService.GetNearestUsers(user.Location);
 
-            return PartialView("_Users", nearbyUsers);
+            IEnumerable<UserDto> nearbyUsers = _locationService.GetNearestUsers(user.Location);
+
+            if (nearbyUsers.Count() > 0)
+            {
+                return PartialView("_Users", nearbyUsers);
+            }
+            else
+            {
+                return PartialView("_Users", null);
+            }
         }
     }
 }
