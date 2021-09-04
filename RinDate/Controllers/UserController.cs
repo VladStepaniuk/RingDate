@@ -14,59 +14,42 @@ namespace RinDate.Controllers
     public class UserController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
+        private ApplicationDbContext _context;
         private IToolService _toolService;
+        private IUserService _userService;
 
-        public UserController(UserManager<ApplicationUser> userManager, IToolService toolService)
+        public UserController(UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context,
+            IToolService toolService,
+            IUserService userService)
         {
             _userManager = userManager;
+            _context = context;
             _toolService = toolService;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-
-            var model = new UserDto()
-            {
-                UserId = user.Id,
-                ImageCoverUrl = user.CoverImageUrl,
-                Gallery = user.UserGallery.Select(img => new GalleryModel
-                {
-                    Id = img.Id,
-                    Name = img.Name,
-                    URL = img.URL
-                }).ToList(),
-                UserName = user.UserName
-            };
+            UserDto model = await _userService.GetUserById(id);
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> UpdateProfile()
+        public async Task<IActionResult> UpdateProfile(string id)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            var model = new UserDto()
-            {
-                ImageCoverUrl = user.CoverImageUrl,
-                Gallery = user.UserGallery.Select(img => new GalleryModel
-                {
-                    Id = img.Id,
-                    Name = img.Name,
-                    URL = img.URL
-                }).ToList()
-            };
-
-            return View(model);
+            return View(await _userService.GetUserById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(UserDto userModel)
         {
+            ApplicationUser user = null;
+
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
+                user = await _userManager.GetUserAsync(User);
                 string folder = "";
                 if (user == null)
                 {
@@ -108,9 +91,14 @@ namespace RinDate.Controllers
                         });
                     }
                 }
+                user.AboutMe = userModel.Description;
+                user.Age = userModel.Age;
+                user.UserName = userModel.UserName;
+
                 await _userManager.UpdateAsync(user);
+                await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", user.Id);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿@using RinDate
 @using RinDate.Models
-@inject SignInManager<RinDate.Data.ApplicationUser> SignInManager
+@using RinDate.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

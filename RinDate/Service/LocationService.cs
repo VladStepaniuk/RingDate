@@ -28,6 +28,9 @@ namespace RinDate.Service
                 {
                     UserId = user.Id,
                     UserName = user.UserName,
+                    Age = user.Age,
+                    Description = user.AboutMe,
+                    ImageCoverUrl = user.CoverImageUrl,
                     Gallery = user.UserGallery.Select(img => new GalleryModel
                     {
                         Id = img.Id,
@@ -37,27 +40,6 @@ namespace RinDate.Service
                 })
                 .ToList();
 
-            //if (usersFromDb != null || usersFromDb.Count() > 0)
-            //{
-            //    IEnumerable<UserDto> users = usersFromDb.Select(user => new UserDto
-            //    {
-            //        UserId = user.Id,
-            //        UserName = user.UserName,
-            //        Gallery = user.UserGallery.Select(img => new GalleryModel
-            //        {
-            //            Id = img.Id,
-            //            Name = img.Name,
-            //            URL = img.URL
-            //        }).ToList()
-
-            //    }).ToList();
-
-            //    
-            //}
-            //else
-            //{
-            //    return null;
-            //}
             return usersFromDb;
         }
     }

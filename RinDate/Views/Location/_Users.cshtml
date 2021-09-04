@@ -3,29 +3,35 @@
 
 @if (Model.Any())
 {
-    <div class="row mt-3">
-        @foreach (var item in Model)
-        {
+<div class="row mt-3">
+    @foreach (var item in Model)
+    {  
+    <div class="col-md-3">
+        <div class="card mb-2" style="width: 15rem;">
             @if (item.ImageCoverUrl != null)
             {
-                <div class="col-lg-3">
-                    <div class="img-thumbnail">
-                        @*<button type="button" asp-controller="User" asp-action="Index" asp-route-id="@item.UserId">*@
-                            <img src="@item.ImageCoverUrl" alt="image" class="img-thumbnail rounded"/>
-                        @*</button>*@
-                    </div>
-                </div>
+                <img class="card-img-top" src="@item.ImageCoverUrl" alt="Card image cap">
             }
             else
             {
-                <div class="col-md-3">
-                        @*<button type="button" asp-controller="User" asp-action="Index" asp-route-id="@item.UserId">*@
-                            <img src="/images/default-image.png" alt="image" class="img-thumbnail rounded"/>
-                        @*</button>*@
-                </div>
+                <img class="card-img-top" src="/images/default-image.png" alt="Card image cap">
             }
-        }
+        <div class="card-body">
+            @if (item.Age != null || item.Age != 0)
+            {
+                <h5 class="card-title">@String.Concat(item.UserName, ", ", item.Age)</h5>
+            }
+            else
+            {
+                <h5 class="card-title">@item.UserName</h5>
+            }
+
+            <a asp-controller="User" asp-action="Index" asp-route-id="@item.UserId" class="btn btn-primary">Go somewhere</a>
+        </div>
+        </div>
     </div>
+     }
+</div>
  }
  else
  {
