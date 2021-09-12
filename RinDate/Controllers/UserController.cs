@@ -79,24 +79,8 @@ namespace RinDate.Controllers
                         userModel.Gallery.Add(gallery);
                     }
 
-                    user.UserGallery = new List<UserGallery>();
-
-                    foreach (var file in userModel.Gallery)
-                    {
-                        user.UserGallery.Add(new UserGallery()
-                        {
-                            Name = file.Name,
-                            URL = file.URL,
-
-                        });
-                    }
                 }
-                user.AboutMe = userModel.Description;
-                user.Age = userModel.Age;
-                user.UserName = userModel.UserName;
-
-                await _userManager.UpdateAsync(user);
-                await _context.SaveChangesAsync();
+               await _userService.UpdateUserProfile(userModel, user);
             }
             return RedirectToAction("Index", user.Id);
         }

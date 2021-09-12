@@ -13,6 +13,8 @@ namespace RinDate.Service
     {
         Task UpdateCurrentUserLocation(Point location, ApplicationUser user);
         Task<UserDto> GetUserById(string id);
+
+        Task UpdateUserProfile(UserDto userModel, ApplicationUser user);
    
     }
 }
